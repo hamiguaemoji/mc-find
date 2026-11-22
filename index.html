@@ -682,6 +682,12 @@ document.addEventListener("keydown", e => {
 
 buildFilters();
 render();
+
+/* 支持从别处带 #submit 直接打开提交面板 */
+if(location.hash === "#submit" || location.hash === "#report"){
+  openSubmit();
+  if(location.hash === "#report") showPane("report");
+}
 </script>
 </body>
 </html>
