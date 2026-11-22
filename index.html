@@ -179,21 +179,14 @@
         <option value="山头服">山头服（用分享链接进入）</option>
       </select></div>
 
-    <div class="row2">
-      <div class="field"><label>玩法类型</label>
-        <select id="f_type">
-          <option>生存</option><option>纯净生存</option><option>小游戏</option>
-          <option>空岛</option><option>创造</option><option>RPG</option>
-          <option>建筑</option><option>跑酷</option><option>PVP竞技</option>
-          <option>解谜</option><option>模组</option><option>生存挑战</option>
-          <option>领地经济</option><option>其他</option>
-        </select></div>
-      <div class="field"><label>版本</label>
-        <select id="f_ver">
-          <option>1.21</option><option>1.20</option><option>1.19</option>
-          <option>1.18</option><option>低版本</option><option>不限</option>
-        </select></div>
-    </div>
+    <div class="field"><label>玩法类型</label>
+      <select id="f_type">
+        <option>生存</option><option>纯净生存</option><option>小游戏</option>
+        <option>空岛</option><option>创造</option><option>RPG</option>
+        <option>建筑</option><option>跑酷</option><option>PVP竞技</option>
+        <option>解谜</option><option>模组</option><option>生存挑战</option>
+        <option>领地经济</option><option>其他</option>
+      </select></div>
 
     <div class="row2">
       <div class="field"><label>开服时间 <i>*</i></label>
@@ -243,7 +236,6 @@
      group: "123456789",          // 官方 QQ 群，可空
      type:  "生存",               // 玩法：生存/纯净生存/小游戏/空岛/创造/RPG/
                                   //       建筑/跑酷/PVP竞技/解谜/模组/生存挑战/领地经济/其他
-     ver:   "1.20",               // 版本，或 "不限"
      since: "2025.03",            // 开服时间
      max:   50,                   // 最多人数
      online: 12,                  // 当前在线，不知道写 null
@@ -276,7 +268,7 @@ function setType(t){ activeType = t; buildFilters(); render(); }
 
 function match(s, q){
   if(!q) return true;
-  const hay = [s.name, s.kind, s.type, s.ver, s.desc, s.tags ? s.tags.join(" ") : ""]
+  const hay = [s.name, s.kind, s.type, s.desc, s.tags ? s.tags.join(" ") : ""]
               .join(" ").toLowerCase();
   return hay.indexOf(q) > -1;
 }
@@ -312,7 +304,7 @@ function render(){
           <div class="srv-t">${esc(s.name)}${kindBadge}
             ${s.rec ? '<span class="badge">推荐</span>' : ""}
             ${s.isNew ? '<span class="badge new">新服</span>' : ""}</div>
-          <div class="srv-s">${esc(s.type)} · ${esc(s.ver)} 版本 · 开服 ${esc(s.since)}</div>
+          <div class="srv-s">${esc(s.type)} · 开服 ${esc(s.since)}</div>
         </div>
       </div>
       <div class="srv-d">${esc(s.desc)}</div>
@@ -334,7 +326,7 @@ function openDetail(i){
     : `<div class="kv"><span>分享链接</span><span>${esc(s.link || "—")}</span></div>`;
   document.getElementById("detailBody").innerHTML = `
     <h3>${esc(s.name)}</h3>
-    <div class="hint">${esc(s.kind)} · ${esc(s.type)} · ${esc(s.ver)} 版本 · 开服 ${esc(s.since)}</div>
+    <div class="hint">${esc(s.kind)} · ${esc(s.type)} · 开服 ${esc(s.since)}</div>
     ${joinRow}
     <div class="kv"><span>最多人数</span><span>${esc(s.max)}</span></div>
     ${s.online != null ? `<div class="kv"><span>当前在线</span><span>${esc(s.online)}</span></div>` : ""}
@@ -376,7 +368,6 @@ function buildSubmit(){
 "名称：" + name + "\n" +
 "类型：" + kind + "\n" +
 "玩法：" + document.getElementById("f_type").value + "\n" +
-"版本：" + document.getElementById("f_ver").value + "\n" +
 "开服时间：" + since + "\n" +
 "最多人数：" + max + "\n" +
 joinLine + "\n" +
