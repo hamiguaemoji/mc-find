@@ -70,6 +70,7 @@
   .badge{font-size:10.5px;font-weight:600;border-radius:6px;padding:1px 6px;
          background:rgba(74,222,128,.14);color:var(--gr);border:1px solid rgba(74,222,128,.3)}
   .badge.new{background:rgba(96,165,250,.14);color:#93c5fd;border-color:rgba(96,165,250,.3)}
+  .badge.old{background:rgba(148,163,184,.14);color:#cbd5e1;border-color:rgba(148,163,184,.32)}
   .badge.rent{background:rgba(251,191,36,.13);color:#fbbf24;border-color:rgba(251,191,36,.3)}
   .badge.mount{background:rgba(167,139,250,.13);color:#c4b5fd;border-color:rgba(167,139,250,.3)}
   .srv-s{color:var(--dim);font-size:12px;margin-top:3px}
@@ -98,11 +99,12 @@
   footer{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);text-align:center;
          color:var(--dim);font-size:12px;line-height:1.95}
 
-  .mask{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;
-        align-items:flex-end;justify-content:center;z-index:50}
+  .mask{position:fixed;inset:0;background:var(--bg);display:none;
+        align-items:stretch;justify-content:center;z-index:50}
   .mask.on{display:flex}
-  .sheet{background:#101917;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0;
-         width:100%;max-width:760px;max-height:88vh;overflow-y:auto;padding:22px 18px 30px}
+  .sheet{background:var(--bg);border:0;border-radius:0;width:100%;max-width:760px;height:100%;
+         max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;
+         padding:calc(20px + env(safe-area-inset-top)) 18px calc(34px + env(safe-area-inset-bottom))}
   .sheet h3{font-size:17px;margin-bottom:6px}
   .sheet .hint{color:var(--dim);font-size:13px;margin-bottom:16px;line-height:1.8}
   .field{margin-bottom:13px}
@@ -146,7 +148,7 @@
   <div class="top">
     <div>
       <h1>网易版我的世界<br>服务器列表</h1>
-      <div class="sub">山头服给链接 · 租赁服给服务器号 · 人工审核</div>
+      <div class="sub">只收山头服和租赁服 · 人工审核</div>
     </div>
     <button class="btn" onclick="openSubmit()">提交与举报</button>
   </div>
@@ -168,10 +170,11 @@
 <div id="list"></div>
 
 <div class="box">
-  <h2>两种服务器</h2>
+  <h2>只收这两种</h2>
   <ul>
-    <li><b>租赁服</b>：玩家自己向官方租的服务器，用<b>服务器号</b>进。</li>
-    <li><b>山头服</b>（我的山头）：玩家自己搭的，支持装模组，用<b>邀请链接</b>进。</li>
+    <li><b>山头服</b>（官方叫「我的山头」）：玩家自己搭的，能装模组，用<b>邀请链接</b>进。</li>
+    <li><b>租赁服</b>：玩家自己向官方租的，用<b>服务器号</b>进。</li>
+    <li>不收官方认证的网络游戏服（花雨庭、EaseCation 那类），也不收第三方运营服。</li>
   </ul>
   <div class="divider"></div>
   <h2>怎么进服</h2>
@@ -183,7 +186,6 @@
   <div class="divider"></div>
   <h2>收录规则</h2>
   <ul>
-    <li>只收玩家自己开的网易版服务器（山头服 / 租赁服）</li>
     <li>信息填全的直接上架：名称、类型、玩法、进入方式齐全就收</li>
     <li>本站不逐一进服核验，也不保证服务器长期在线</li>
     <li>被举报后才会核实：停服、外挂、返利赌博、虚假宣传</li>
@@ -227,8 +229,8 @@
 
       <div class="field"><label>服务器类型 <i>*</i></label>
         <select id="f_kind" onchange="syncJoin()">
-          <option value="租赁服">租赁服（用服务器号进入）</option>
-          <option value="山头服">山头服（用分享链接进入）</option>
+          <option value="山头服">山头服（用邀请链接进）</option>
+          <option value="租赁服">租赁服（用服务器号进）</option>
         </select></div>
 
       <div class="field" id="wrap_sid"><label>服务器号 <i>*</i></label>
@@ -239,11 +241,14 @@
 
       <div class="field"><label>玩法类型</label>
         <select id="f_type">
-          <option>生存</option><option>纯净生存</option><option>小游戏</option>
-          <option>空岛</option><option>创造</option><option>RPG</option>
-          <option>建筑</option><option>跑酷</option><option>PVP竞技</option>
-          <option>搜打撤</option><option>解谜</option><option>模组</option><option>生存挑战</option>
-          <option>领地经济</option><option>其他</option>
+          <option>生存</option><option>纯净生存</option><option>生存挑战</option>
+          <option>小游戏</option>
+          <option>跑酷</option>
+          <option>PVP竞技</option>
+          <option>搜打撤</option><option>空岛</option><option>创造</option>
+          <option>建筑</option><option>红石</option><option>RPG</option>
+          <option>冒险</option><option>模组</option><option>宝可梦</option>
+          <option>经营领地</option><option>解谜</option><option>其他</option>
         </select></div>
 
       <div class="row2">
@@ -363,9 +368,22 @@ const SERVERS = [
 ];
 
 /* ---------- 筛选 ---------- */
-const TYPES = ["全部","生存","纯净生存","小游戏","空岛","创造","RPG",
-               "建筑","跑酷","PVP竞技","搜打撤","解谜","模组","生存挑战","领地经济","其他"];
+/* 筛选只放 7 个主类，卡片上照样显示细分玩法 */
+const BUCKETS = {
+  "生存": ["生存","纯净生存","生存挑战","经营领地"],
+  "小游戏": ["小游戏","跑酷","PVP竞技","搜打撤"],
+  "空岛": ["空岛"],
+  "创造": ["创造","建筑","红石"],
+  "RPG": ["RPG","冒险","模组","宝可梦"]
+};
+const TYPES = ["全部","生存","小游戏","空岛","创造","RPG","其他"];
 let activeType = "全部";
+
+/* 某服务器的细分玩法属于哪个主类 */
+function bucketOf(t){
+  for(const k in BUCKETS){ if(BUCKETS[k].indexOf(t) > -1) return k; }
+  return "其他";
+}
 
 function esc(s){
   return String(s == null ? "" : s).replace(/[&<>"']/g, c => (
@@ -387,11 +405,28 @@ function match(s, q){
   return hay.indexOf(q) > -1;
 }
 
+/* 根据开服时间算"几年老服"，算不出来返回空 */
+function ageBadge(since){
+  if(!since) return "";
+  const m = String(since).match(/(\d{4})\D*(\d{1,2})?/);
+  if(!m) return "";
+  const y = parseInt(m[1], 10);
+  const mo = m[2] ? parseInt(m[2], 10) - 1 : 0;
+  if(!y || y < 2000) return "";
+  const start = new Date(y, mo, 1).getTime();
+  const months = (Date.now() - start) / (1000 * 60 * 60 * 24 * 30.44);
+  if(months < 3) return '<span class="badge new">新服</span>';
+  const years = Math.floor(months / 12);
+  if(years < 1) return "";
+  const label = years >= 4 ? "4年+老服" : years + "年老服";
+  return '<span class="badge old">' + label + '</span>';
+}
+
 /* ---------- 列表 ---------- */
 function render(){
   const q = (document.getElementById("q").value || "").trim().toLowerCase();
   const box = document.getElementById("list");
-  const list = SERVERS.filter(s => (activeType === "全部" || s.type === activeType) && match(s, q));
+  const list = SERVERS.filter(s => (activeType === "全部" || bucketOf(s.type) === activeType) && match(s, q));
 
   document.getElementById("count").textContent = list.length;
   const caps = list.map(s => parseInt(s.max, 10)).filter(n => !isNaN(n));
@@ -422,9 +457,9 @@ function render(){
     return '<div class="item" onclick="openDetail(' + i + ')">' +
       '<div class="ico">' + (s.icon ? '<img src="' + esc(s.icon) + '" alt="">' : "⛏") + '</div>' +
       '<div class="item-main">' +
-        '<div class="item-name">' + esc(s.name) + kindBadge +
+        '<div class="item-name">' + ageBadge(s.since) + esc(s.name) + kindBadge +
           (s.rec ? '<span class="badge">推荐</span>' : "") +
-          (s.isNew ? '<span class="badge new">新服</span>' : "") + '</div>' +
+          ((s.isNew && !s.since) ? '<span class="badge new">新服</span>' : "") + '</div>' +
         '<div class="item-meta">' + esc(s.type) + (s.since ? " · 开服 " + esc(s.since) : "") + '</div>' +
         '<div class="item-desc">' + esc(s.desc || "") + '</div>' +
         '<div class="item-addr">' + esc(addr) + '</div>' +
